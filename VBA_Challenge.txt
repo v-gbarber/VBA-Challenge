@@ -1,0 +1,77 @@
+Sub Multiple_Year_Stock()
+'variables
+   Dim ws As Worksheet
+   Dim ticker As String
+   Dim vol As Integer
+   Dim totalrows As Double
+   Dim StockDate As Long
+   Dim StockOpen As Double
+   Dim StockClose As Double
+   Dim StockStart As Long
+   Dim StockEnd As Long
+   Dim StockVolume As Double
+   Dim outputtable As Integer
+   
+   outputtable = 2
+   StockVolume = 0
+   
+   totalrows = Cells(Rows.Count, 1).End(xlUp).Row
+
+   For Each ws In ThisWorkbook.Worksheets
+   
+    
+   'headers
+   ws.Cells(1, 9).Value = "Ticker"
+   ws.Cells(1, 10).Value = "Yearly Change"
+   ws.Cells(1, 11).Value = "Percent Change"
+   ws.Cells(1, 12).Value = "Total Stock Volume"
+    
+'loop
+    For i = 2 To totalrows
+    ticker = ws.Cells(i, 1).Value
+    Volume = ws.Cells(i, 7).Value
+    
+    If ticker = ws.Cells(i + 1, 1).Value Then
+    StockVolume = StockVolume + Volume
+    year_open = ws.Cells(i, 3).Value
+    Year_close = ws.Cells(i, 6).Value
+    yearly_change = Year_close - year_open
+    
+    
+    If year_open = 0 Then
+    percent_change = 0
+    Else
+    percent_change = (yearly_change / year_open) * 100
+    End If
+
+' Summary_Row
+'If StockTickerCheck = StockTicker Then
+ws.Cells(outputtable, 9).Value = ticker
+ws.Cells(outputtable, 10).Value = yearly_change
+ws.Cells(outputtable, 11).Value = percent_change
+ws.Cells(outputtable, 12).Value = StockVolume
+
+ 'Conditional Formatting
+    
+    If yearly_change > 0 Then
+     ws.Cells(outputtable, 10).Interior.ColorIndex = 4
+ElseIf yearly_change < 0 Then
+    ws.Cells(outputtable, 10).Interior.ColorIndex = 3
+Else
+     ws.Cells(outputtable, 10).Interior.ColorIndex = 2
+     End If
+
+Else
+ StockVolume = StockVolume + Volume
+ yearly_change = Year_close - year_open
+ StockVolume = 0
+ outputtable = outputtable + 1
+ 
+ End If
+ 
+    Next i
+   
+    Next ws
+
+
+End Sub
