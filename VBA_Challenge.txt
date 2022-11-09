@@ -1,6 +1,10 @@
+
 Sub Multiple_Year_Stock()
+
+
 'variables
    Dim ws As Worksheet
+    For Each ws In ThisWorkbook.Worksheets
    Dim ticker As String
    Dim vol As Integer
    Dim totalrows As Double
@@ -15,10 +19,7 @@ Sub Multiple_Year_Stock()
    outputtable = 2
    StockVolume = 0
    
-   totalrows = Cells(Rows.Count, 1).End(xlUp).Row
-
-   For Each ws In ThisWorkbook.Worksheets
-   
+    totalrows = ws.Cells(Rows.Count, 1).End(xlUp).Row
     
    'headers
    ws.Cells(1, 9).Value = "Ticker"
@@ -44,22 +45,24 @@ Sub Multiple_Year_Stock()
     percent_change = (yearly_change / year_open) * 100
     End If
 
+ 'Conditional Formatting
+    
+    If yearly_change <= 0 Then
+     ws.Cells(i, 10).Interior.ColorIndex = 3
+     
+ElseIf yearly_change > 0 Then
+
+    ws.Cells(i, 10).Interior.ColorIndex = 4
+
+     End If
 ' Summary_Row
 'If StockTickerCheck = StockTicker Then
 ws.Cells(outputtable, 9).Value = ticker
 ws.Cells(outputtable, 10).Value = yearly_change
 ws.Cells(outputtable, 11).Value = percent_change
+ws.Cells(outputtable, 11).NumberFormat = "0.00%"
 ws.Cells(outputtable, 12).Value = StockVolume
 
- 'Conditional Formatting
-    
-    If yearly_change > 0 Then
-     ws.Cells(outputtable, 10).Interior.ColorIndex = 4
-ElseIf yearly_change < 0 Then
-    ws.Cells(outputtable, 10).Interior.ColorIndex = 3
-Else
-     ws.Cells(outputtable, 10).Interior.ColorIndex = 2
-     End If
 
 Else
  StockVolume = StockVolume + Volume
